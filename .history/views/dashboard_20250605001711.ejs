@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MyMood Journal</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+<div class="sidebar">
+    <div class="logo">
+        <img src="/images/logo.png" alt="MyMood Journal">
+        <span>MyMood Journal</span>
+    </div>
+    
+    <nav class="nav-menu">
+        <a href="/dashboard" class="nav-item active">
+            <i class="fas fa-home"></i>
+            My Dashboard
+        </a>
+        <a href="/journals" class="nav-item">
+            <i class="fas fa-book"></i>
+            My Journals
+        </a>
+        <a href="/goals" class="nav-item">
+            <i class="fas fa-bullseye"></i>
+            My Goals
+        </a>
+        <a href="/calendar" class="nav-item">
+            <i class="fas fa-calendar"></i>
+            Calendar
+        </a>
+        <a href="/settings" class="nav-item">
+            <i class="fas fa-cog"></i>
+            Settings
+        </a>
+    </nav>
+
+    <div class="logout-section">
+        <a href="/users/logout" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+        </a>
+    </div>
+</div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <h1>My Dashboard</h1>
+                <div class="user-profile">
+                    <a href="/profile" class="user-initials">
+                        <%= userInitials %>
+                    </a>
+                </div>
+            </header>
+
+            <!-- Dashboard Overview -->
+            <section class="dashboard-overview">
+                <h2>Dashboard Overview</h2>
+                
+                <div class="dashboard-grid">
+                    <!-- Journal Entries Section -->
+                    <div class="dashboard-card journal-entries">
+                        <h3>Journal Entries</h3>
+                        <div class="entries-list">
+                            <% if (recentEntries && recentEntries.length > 0) { %>
+                                <% recentEntries.forEach(entry => { %>
+                                    <div class="entry-card">
+                                        <h4><%= entry.title %></h4>
+                                        <span class="entry-count"><%= entry.mood || 'No mood' %></span>
+                                    </div>
+                                <% }); %>
+                            <% } else { %>
+                                <div class="empty-state">
+                                    <p>No journal entries yet</p>
+                                    <a href="/entries/new" class="btn-primary">Create your first entry</a>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <!-- Goals Progress Section -->
+                    <div class="dashboard-card goals-progress">
+                        <h3>Goals Progress</h3>
+                        <div class="goals-stats">
+                            <div class="goal-stat">
+                                <span class="label">Completed Goals</span>
+                                <span class="value"><%= goalsData.completed %></span>
+                            </div>
+                            <div class="goal-stat">
+                                <span class="label">In Progress</span>
+                                <span class="value"><%= goalsData.inProgress %></span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: <%= goalsData.completionRate %>%;"></div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats Section -->
+                    <div class="dashboard-card quick-stats">
+                        <h3>Quick Stats</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-label">Total Entries</span>
+                                <span class="stat-value"><%= totalEntries %></span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Goal Completion</span>
+                                <span class="stat-value"><%= goalsData.completionRate %>%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity Section -->
+                    <div class="dashboard-card recent-activity">
+                        <h3>Recent Activity</h3>
+                        <div class="activity-list">
+                            <% if (recentActivity && recentActivity.length > 0) { %>
+                                <% recentActivity.forEach(activity => { %>
+                                    <div class="activity-item">
+                                        <span class="activity-title"><%= activity.title %></span>
+                                        <span class="activity-time">
+                                            <%= new Date(activity.createdAt).toLocaleString() %>
+                                        </span>
+                                    </div>
+                                <% }); %>
+                            <% } else { %>
+                                <p>No recent activity</p>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <script src="/js/dashboard.js"></script>
+</body>
+</html> 

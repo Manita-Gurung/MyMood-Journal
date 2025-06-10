@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= journal.title %> - MyMood Journal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/journals.css">
+</head>
+<body>
+<div class="dashboard-container">
+    <%- include('partials/sidebar', { activePage: 'journals' }) %>
+    <div class="main-content">
+        <%- include('partials/header', { title: 'Journal View', userInitials: userInitials }) %>
+        <a href="/journals" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Back to Journals
+        </a>
+        <div class="journal-container">
+            <div class="journal-header">
+                <div class="journal-title-section">
+                    <h2 id="journalTitle"><%= journal.title %></h2>
+                    <input type="text" id="titleInput" class="journal-title-input" value="<%= journal.title %>">
+                    <div class="journal-date">
+                        <%= new Date(journal.date).toLocaleDateString('en-US', { 
+                            weekday: 'long', 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        }) %>
+                    </div>
+                    </div>
+                <div class="journal-actions">
+                    <button class="btn btn-edit" onclick="startEditing()">
+                        <i class="fas fa-edit"></i>
+                        Edit
+                    </button>
+                    <button class="btn btn-save" onclick="saveChanges()">
+                        <i class="fas fa-save"></i>
+                        Save
+                    </button>
+                    <button class="btn btn-cancel" onclick="cancelEditing()">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </button>
+                    </div>
+            </div>
+
+            <div id="journalContent" class="journal-content"><%= journal.content %></div>
+            <textarea id="contentInput" class="journal-content-input"><%= journal.content %></textarea>
+            <div class="form-group" id="moodSelector" style="display: none;">
+                <label for="moodInput">Mood</label>
+                <select id="moodInput">
+                    <option value="Happy" <%= journal.mood === 'Happy' ? 'selected' : '' %>>😊 Happy</option>
+                    <option value="Excited" <%= journal.mood === 'Excited' ? 'selected' : '' %>>🤗 Excited</option>
+                    <option value="Loved" <%= journal.mood === 'Loved' ? 'selected' : '' %>>🥰 Loved</option>
+                    <option value="Calm" <%= journal.mood === 'Calm' ? 'selected' : '' %>>😌 Calm</option>
+                    <option value="Okay" <%= journal.mood === 'Okay' ? 'selected' : '' %>>😐 Okay</option>
+                    <option value="Sad" <%= journal.mood === 'Sad' ? 'selected' : '' %>>😢 Sad</option>
+                    <option value="Angry" <%= journal.mood === 'Angry' ? 'selected' : '' %>>😠 Angry</option>
+                    <option value="Stressed" <%= journal.mood === 'Stressed' ? 'selected' : '' %>>😫 Stressed</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let originalTitle = '<%= journal.title %>';
+        let originalContent = '<%= journal.content %>';
+        let originalMood = '<%= journal.mood %>';
+
+        function startEditing() {
+            // Hide static elements
+            document.getElementById('journalTitle').style.display = 'none';
+            document.getElementById('journalContent').style.display = 'none';
+            document.querySelector('.btn-edit').style.display = 'none';
+
+            // Show editable elements
+            document.getElementById('titleInput').style.display = 'block';
+            document.getElementById('contentInput').style.display = 'block';
+            document.getElementById('moodSelector').style.display = 'block';
+            document.querySelector('.btn-save').style.display = 'inline-flex';
+            document.querySelector('.btn-cancel').style.display = 'inline-flex';
+        }
+
+        function cancelEditing() {
+            // Restore original values
+            document.getElementById('titleInput').value = originalTitle;
+            document.getElementById('contentInput').value = originalContent;
+
+            // Hide editable elements
+            document.getElementById('titleInput').style.display = 'none';
+            document.getElementById('contentInput').style.display = 'none';
+            document.getElementById('moodSelector').style.display = 'none';
+            document.querySelector('.btn-save').style.display = 'none';
+            document.querySelector('.btn-cancel').style.display = 'none';
+
+            // Show static elements
+            document.getElementById('journalTitle').style.display = 'block';
+            document.getElementById('journalContent').style.display = 'block';
+            document.querySelector('.btn-edit').style.display = 'inline-flex';
+        }
+
+        function saveChanges() {
+            const newTitle = document.getElementById('titleInput').value;
+            const newContent = document.getElementById('contentInput').value;
+            const newMood = document.getElementById('moodInput').value;
+
+            // Send update to server
+            fetch('/journals/<%= journal.id %>', {
+                    method: 'PUT',
+                    headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    title: newTitle,
+                    content: newContent,
+                    mood: newMood
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the displayed content
+                    document.getElementById('journalTitle').textContent = newTitle;
+                    document.getElementById('journalContent').textContent = newContent;
+                    originalTitle = newTitle;
+                    originalContent = newContent;
+                    originalMood = newMood;
+
+                    // Switch back to view mode
+                    cancelEditing();
+                } else {
+                    alert('Failed to save changes. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to save changes. Please try again.');
+            });
+        }
+    </script>
+</body>
+</html>

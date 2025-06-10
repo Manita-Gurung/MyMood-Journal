@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= journal.title %> - MyMood Journal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-color: #E6E0F4;
+            --main-color: #8B4FFF;
+            --content-bg: #FBE4E4;
+            --text-color: #333;
+            --light-text-color: #666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            min-height: 100vh;
+            background-color: #f9f9f9;
+        }
+
+        .sidebar { /* This will be handled by partials/sidebar.ejs styles if included */
+            width: 250px;
+            background-color: var(--sidebar-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: fixed; /* Ensures sidebar stays fixed */
+            top: 0;
+            left: 0;
+        }
+
+        .main-content-area {
+            margin-left: 250px; /* Same as sidebar width */
+            flex-grow: 1;
+            padding: 30px;
+            background-color: white; /* Or #f9f9f9 if you prefer full page bg */
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: var(--text-color);
+        }
+        
+        .profile-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 40px; /* Slightly larger for better clickability */
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem; /* Ensure text is visible */
+            color: var(--main-color);
+            background-color: var(--sidebar-color);
+            text-decoration: none; /* If it's an anchor */
+        }
+        .profile-btn:hover {
+            opacity: 0.9;
+        }
+
+        .journal-display-container {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .journal-title {
+            font-size: 1.7rem;
+            color: var(--main-color);
+            margin-bottom: 10px;
+        }
+
+        .journal-date {
+            font-size: 0.9rem;
+            color: var(--light-text-color);
+            margin-bottom: 20px;
+        }
+
+        .journal-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-color);
+            white-space: pre-wrap; /* Preserve line breaks and spaces */
+            word-wrap: break-word; /* Ensure long words don't overflow */
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--main-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link i {
+            margin-right: 5px;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+    <%- include('partials/sidebar') %>
+
+    <div class="main-content-area">
+        <div class="header">
+            <h1>Journal Entry</h1>
+            <a href="/profile" class="profile-btn">
+                <% if (user && user.username && user.username.length > 0) { %>
+                    <%= user.username.charAt(0).toUpperCase() %>
+                    <% if (user.username.includes(' ')) { %>
+                        <%= user.username.split(' ')[1].charAt(0).toUpperCase() %>
+                    <% } else if (user.username.length > 1) { %>
+                        <%= user.username.charAt(1).toUpperCase() %>
+                    <% } %>
+                <% } else { %>
+                    <i class="fas fa-user"></i> <!-- Fallback icon -->
+                <% } %>
+            </a>
+        </div>
+
+        <a href="/journals" class="back-link"><i class="fas fa-arrow-left"></i> Back to Journals</a>
+
+        <div class="journal-display-container">
+            <h2 class="journal-title"><%= journal.title %></h2>
+            <p class="journal-date">
+                <% const date = new Date(journal.date); %>
+                <%= date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                 - 
+                <%= date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) %>
+            </p>
+            <div class="journal-content">
+                <%- journal.content.replace(/\n/g, '<br>') %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

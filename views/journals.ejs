@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Journals - MyMood Journal</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/journals.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <%- include('partials/sidebar', { activePage: 'journals' }) %>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+        <%- include('partials/header', { title: 'My Journals', userInitials: userInitials }) %>
+
+        <a href="/journals/new" class="new-entry-btn">
+            <i class="fas fa-plus"></i>
+            New Entry
+        </a>
+
+        <% if (journals && journals.length > 0) { %>
+            <ul class="journal-list">
+                <% journals.forEach(journal => { %>
+                    <li>
+                        <div class="journal-list-item">
+                            <a href="/journals/<%= journal.id %>" class="journal-item-link">
+                                <div class="journal-item-icon-area">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div class="journal-item-title-area">
+                                    <span><%= journal.title %></span>
+                                </div>
+                            </a>
+                            <form action="/journals/delete/<%= journal.id %>?_method=DELETE" method="POST" class="journal-item-delete-form" onsubmit="return confirm('Are you sure you want to delete this journal entry?');">
+                                <button type="submit" class="journal-item-delete-btn">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <div class="no-journals">
+                <p>You haven't created any journal entries yet.</p>
+                <p>Click "New Entry" to get started!</p>
+            </div>
+        <% } %>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= journal.title %> - MyMood Journal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-color: #E6E0F4;
+            --main-color: #8B4FFF;
+            --content-bg: #FBE4E4;
+            --text-color: #333;
+            --light-text-color: #666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            min-height: 100vh;
+            background-color: #f9f9f9;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: fixed;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+
+        .logo-container img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .logo-container span {
+            font-size: 1.2rem;
+            color: var(--text-color);
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            text-decoration: none;
+            color: var(--text-color);
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-link.active, .nav-link:hover {
+            background-color: rgba(139, 79, 255, 0.1);
+            color: var(--main-color);
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .main-content-area { /* Renamed to avoid conflict if any */
+            margin-left: 250px; /* Same as sidebar width */
+            flex-grow: 1;
+            padding: 30px;
+            background-color: white;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: var(--text-color);
+        }
+        
+        .profile-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--main-color);
+            background-color: var(--sidebar-color);
+        }
+
+        .journal-display-container {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .journal-title {
+            font-size: 1.7rem;
+            color: var(--main-color);
+            margin-bottom: 10px;
+        }
+
+        .journal-date {
+            font-size: 0.9rem;
+            color: var(--light-text-color);
+            margin-bottom: 20px;
+        }
+
+        .journal-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-color);
+            white-space: pre-wrap; /* Preserve line breaks and spaces */
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--main-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+    <%- include('partials/sidebar') %>
+
+    <div class="main-content-area">
+        <div class="header">
+            <h1>Journal Entry</h1>
