@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Goals - MyMood Journal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Added CSS for consistent styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: #C8BFE7;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+
+        .logo span {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .nav-menu {
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            color: #333;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background-color: #fff;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-section {
+            margin-top: auto;
+            padding-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #785A96;
+            background-color: #fff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: 2px solid #785A96;
+            width: fit-content;
+            font-size: 0.9em;
+        }
+
+        .logout-btn:hover {
+            background-color: #785A96;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-btn i {
+            margin-right: 8px;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            background-color: white;
+        }
+
+        /* UPDATED HEADER STYLES */
+        .goals-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background-color: #785A96; /* Changed to match journal page */
+            padding: 15px 20px;
+            border-radius: 10px;
+        }
+
+        .goals-header h1 {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            background: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #785A96; /* Changed to match journal page */
+            text-decoration: none;
+        }
+
+        
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img src="/images/logo.png" alt="MyMood Journal">
+                <span>MyMood Journal</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="/dashboard" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    My Dashboard
+                </a>
+                <a href="/journals" class="nav-item">
+                    <i class="fas fa-book"></i>
+                    My Journals
+                </a>
+                <a href="/goals" class="nav-item active">
+                    <i class="fas fa-bullseye"></i>
+                    My Goals
+                </a>
+                <a href="/calendar" class="nav-item">
+                    <i class="fas fa-calendar"></i>
+                    Calendar
+                </a>
+                <a href="/settings" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </nav>
+
+            <div class="logout-section">
+                <a href="/users/logout" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Updated Header -->
+            <div class="goals-header">
+                <div>
+                    <h1>My Goals</h1>
+                </div>
+                <div class="header-right">
+                    <a href="/profile" class="user-avatar"><%= userInitials %></a>
+                    <button class="add-goal-btn" onclick="showAddGoalModal()">
+                        <i class="fas fa-plus"></i> Add New Goal
+                    </button>
+                </div>
+            </div>
+
+            <div class="goals-container">
+                <div class="goal-tracker">
+                    <div class="tracker-header">
+                        <h2>Goal Tracker</h2>
+                    </div>
+
+                    <div class="goals-list">
+                        <% if (goals && goals.length > 0) { %>
+                            <% goals.forEach(goal => { %>
+                                <div class="goal-item <%= goal.completed ? 'completed' : '' %>" data-goal-id="<%= goal.id %>">
+                                    <button onclick="toggleGoal(<%= goal.id %>)" class="goal-checkbox <%= goal.completed ? 'checked' : '' %>">
+                                        <i class="fas <%= goal.completed ? 'fa-check' : 'fa-circle' %>"></i>
+                                    </button>
+                                    <div class="goal-details">
+                                        <h3><%= goal.title %></h3>
+                                        <p><%= goal.description %></p>
+                                        <span class="due-date">Due: <%= new Date(goal.dueDate).toLocaleDateString() %></span>
+                                    </div>
+                                    <form action="/goals/<%= goal.id %>?_method=DELETE" method="POST" style="display: inline;">
+                                        <button type="submit" class="delete-goal">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            <% }); %>
+                        <% } else { %>
+                            <div class="empty-state">
+                                <p>No goals yet. Start by adding your first goal!</p>
+                                <button class="add-goal-btn" onclick="showAddGoalModal()">
+                                    <i class="fas fa-plus"></i> Add New Goal
+                                </button>
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <div class="goals-summary">
+                        <div class="summary-box">
+                            <h3>My Goals</h3>
+                            <div class="stats">
+                                <p>Total Goals: <%= goals ? goals.length : 0 %></p>
+                                <p>Completed: <%= goals ? goals.filter(g => g.completed).length : 0 %></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Goal Modal -->
+    <div id="addGoalModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddGoalModal()">&times;</span>
+            <h2>Add New Goal</h2>
+            <form action="/goals" method="POST">
+                <div class="form-group">
+                    <label for="title">Goal Title</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="dueDate">Due Date</label>
+                    <input type="date" id="dueDate" name="dueDate" required>
+                </div>
+                <button type="submit" class="submit-btn">Create Goal</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showAddGoalModal() {
+            document.getElementById('addGoalModal').style.display = 'block';
+        }
+
+        function closeAddGoalModal() {
+            document.getElementById('addGoalModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('addGoalModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Toggle goal completion using AJAX
+        function toggleGoal(goalId) {
+            fetch(`/goals/${goalId}/toggle`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const goalItem = document.querySelector(`[data-goal-id="${goalId}"]`);
+                    const checkbox = goalItem.querySelector('.goal-checkbox');
+                    const icon = checkbox.querySelector('i');
+                    
+                    if (data.completed) {
+                        goalItem.classList.add('completed');
+                        checkbox.classList.add('checked');
+                        icon.classList.remove('fa-circle');
+                        icon.classList.add('fa-check');
+                    } else {
+                        goalItem.classList.remove('completed');
+                        checkbox.classList.remove('checked');
+                        icon.classList.remove('fa-check');
+                        icon.classList.add('fa-circle');
+                    }
+
+                    // Update the completion count
+                    const completedGoals = document.querySelectorAll('.goal-item.completed').length;
+                    const totalGoals = document.querySelectorAll('.goal-item').length;
+                    document.querySelector('.stats').innerHTML = `
+                        <p>Total Goals: ${totalGoals}</p>
+                        <p>Completed: ${completedGoals}</p>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to update goal status');
+            });
+        }
+    </script>
+</body>
+</html>

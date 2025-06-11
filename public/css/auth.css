@@ -1,0 +1,337 @@
+/* Auth Pages Styles */
+:root {
+    --primary-color: #C8BFE7;
+    --hover-color: #8B7FD3;
+    --text-color: #333;
+    --error-color: #ff4444;
+    --success-color: #00C851;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-image: url('/images/footer.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 20px;
+    position: relative;
+}
+
+.auth-box {
+    background: var(--primary-color);
+    padding: 40px;
+    border-radius: 12px;
+    backdrop-filter: blur(5px);
+}
+
+.back-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: white;
+    color: #333;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.back-button svg {
+    width: 16px;
+    height: 16px;
+}
+
+.back-button:hover {
+    background: var(--hover-color);
+    color: white;
+}
+
+.back-button:hover svg {
+    stroke: white;
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 25px;
+    font-size: 28px;
+    text-align: center;
+}
+
+.subtitle {
+    color: #333;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 16px;
+}
+
+h3 {
+    color: #333;
+    margin-bottom: 25px;
+    font-size: 22px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(139, 127, 211, 0.3);
+}
+
+input::placeholder {
+    color: #999;
+}
+
+.submit-button {
+    width: 100px;
+    padding: 12px;
+    background: white;
+    color: #333;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 25px auto 0;
+    display: block;
+    font-weight: 500;
+}
+
+.submit-button:hover {
+    background: var(--hover-color);
+    color: white;
+}
+
+.form-text {
+    display: block;
+    margin-top: 8px;
+    color: #333;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.auth-switch {
+    text-align: center;
+    margin-top: 25px;
+    color: #333;
+    font-size: 14px;
+}
+
+.admin-login {
+    text-align: center;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.admin-link {
+    color: #666;
+    text-decoration: none;
+    font-size: 0.9em;
+    transition: color 0.3s ease;
+}
+
+.admin-link:hover {
+    color: #4a90e2;
+}
+
+.auth-switch a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-switch a:hover {
+    text-decoration: underline;
+}
+
+.forgot-password {
+    display: block;
+    text-align: right;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+    margin-top: 8px;
+    font-weight: 500;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+.alert {
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.alert-danger {
+    color: var(--error-color);
+}
+
+.alert-success {
+    color: var(--success-color);
+}
+
+.alert p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Make inputs look more modern */
+input::placeholder {
+    color: #999;
+}
+
+/* Add subtle transition effects */
+.auth-box, input, .submit-button {
+    transition: all 0.3s ease;
+}
+
+/* Small text below inputs */
+small {
+    display: block;
+    margin-top: 5px;
+    color: #666;
+    font-size: 12px;
+}
+
+/* Error message styling */
+.error-message {
+    color: var(--error-color);
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Success message styling */
+.success-message {
+    color: var(--success-color);
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Alert message styling */
+.alert p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Make sure alerts stack properly */
+.alert + .alert {
+    margin-top: -10px;
+}
+
+/* Sign Up Link Styling */
+.sign-up-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    color: #666;
+}
+
+.sign-up-link a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.sign-up-link a:hover {
+    text-decoration: underline;
+}
+
+/* Welcome Message Styling */
+h2.welcome-back {
+    font-size: 28px;
+    margin-bottom: 25px;
+    text-align: center;
+    color: var(--text-color);
+}
+
+/* Log In Button Specific Styling */
+.log-in-button {
+    background: var(--primary-color);
+    color: white;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+}
+
+.log-in-button:hover {
+    background: var(--secondary-color);
+}
+
+.verification-input {
+    text-align: center;
+    letter-spacing: 4px;
+    font-size: 20px !important;
+}
+
+.code-timer {
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    margin-top: 15px;
+}
+
+.resend-link {
+    color: #8B4FFF;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.resend-link:hover {
+    text-decoration: underline;
+}
+
+.auth-description {
+    text-align: center;
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 14px;
+    line-height: 1.6;
+}

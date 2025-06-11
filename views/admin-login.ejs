@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - MyMood Journal</title>
+    <link rel="stylesheet" href="/css/admin-auth.css">
+</head>
+<body>
+    <div class="admin-auth-container">
+        <a href="/users/login" class="back-button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back
+        </a>
+        <div class="admin-auth-box">
+            <h2>Admin Login</h2>
+            <div class="restricted-notice">
+                <span class="warning-icon">⚠</span> Restricted Access - Admin Only
+            </div>
+            
+            <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
+                <div class="alert alert-danger">
+                    <% errors.forEach(function(error) { %>
+                        <p><%= error.msg %></p>
+                    <% }); %>
+                </div>
+            <% } %>
+            <% if(success_msg != '') { %>
+                <div class="alert alert-success">
+                    <p><%= success_msg %></p>
+                </div>
+            <% } %>
+            <% if(error_msg != '') { %>
+                <div class="alert alert-danger">
+                    <p><%= error_msg %></p>
+                </div>
+            <% } %>
+            
+            <form action="/admin/login" method="POST">
+                <div class="form-group">
+                    <label for="email">Admin Email</label>
+                    <input type="email" id="email" name="email" required 
+                           value="<%= typeof email != 'undefined' ? email : '' %>">
+                </div>
+                <div class="form-group">
+                    <label for="password">Admin Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <a href="/admin/reset-password" class="reset-password">Reset Admin Password</a>
+                </div>
+                <button type="submit" class="submit-button">Login</button>
+                <div class="secure-notice">
+                    <span class="secure-icon">🔒</span> Secure admin authentication
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+

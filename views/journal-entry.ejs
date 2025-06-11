@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Journal Entry - MyMood Journal</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/journals.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<div class="dashboard-container">
+    <%- include('partials/sidebar', { activePage: 'journals' }) %>
+    <div class="main-content">
+        <%- include('partials/header', { title: 'New Journal Entry', userInitials: userInitials }) %>
+        <form action="/journals/create" method="POST" class="journal-form">
+            <div class="form-header">
+                <input type="text" name="title" placeholder="Title" required>
+                <input type="date" name="date" required>
+            </div>
+            <textarea name="content" class="journal-content" placeholder="Start writing here..."></textarea>
+            <div class="form-group">
+                <label for="mood">Mood</label>
+                <select name="mood" id="mood">
+                    <option value="Happy">😊 Happy</option>
+                    <option value="Excited">🤗 Excited</option>
+                    <option value="Loved">🥰 Loved</option>
+                    <option value="Calm">😌 Calm</option>
+                    <option value="Okay">😐 Okay</option>
+                    <option value="Sad">😢 Sad</option>
+                    <option value="Angry">😠 Angry</option>
+                    <option value="Stressed">😫 Stressed</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">Save Entry</button>
+            </div>
+        </form>
+    </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</body>
+</html>

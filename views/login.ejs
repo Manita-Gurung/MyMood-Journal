@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MyMood Journal</title>
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+    <div class="auth-container">
+        <a href="/" class="back-button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back
+        </a>
+        <div class="auth-box">
+            <h2>Welcome back!</h2>
+            <h3>Login</h3>
+            
+            <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
+                <div class="alert alert-danger">
+                    <% errors.forEach(function(error) { %>
+                        <p><%= error.msg %></p>
+                    <% }); %>
+                </div>
+            <% } %>
+            <% if(success_msg != '') { %>
+                <div class="alert alert-success">
+                    <p><%= success_msg %></p>
+                </div>
+            <% } %>
+            <% if(error_msg != '') { %>
+                <div class="alert alert-danger">
+                    <p><%= error_msg %></p>
+                </div>
+            <% } %>
+            
+            <form action="/users/login" method="POST">
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input type="email" id="email" name="email" required 
+                           value="<%= typeof email != 'undefined' ? email : '' %>">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <a href="/users/forgot-password" class="forgot-password">Forgot password?</a>
+                </div>
+                <button type="submit" class="submit-button">Submit</button>
+                <div class="auth-switch">
+                    New to MyMood? <a href="/users/register">Sign Up</a>
+                </div>
+                <div class="admin-login">
+                    <a href="/admin/login" class="admin-link">Admin Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Journals - MyMood Journal</title>
+    <link rel="stylesheet" href="/css/journals.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img src="/images/logo.png" alt="MyMood Journal">
+                <span>MyMood Journal</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="/dashboard" class="nav-item">My Dashboard</a>
+                <a href="/journals" class="nav-item active">My Journals</a>
+                <a href="/goals" class="nav-item">My Goals</a>
+                <a href="/calendar" class="nav-item">Calendar</a>
+                <a href="/settings" class="nav-item">Settings</a>
+            </nav>
+
+            <div class="logout-section">
+                <form action="/users/logout" method="POST">
+                    <button type="submit" class="logout-btn">
+                        <img src="/images/logout-icon.png" alt="Logout">
+                        Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="journals-header">
+                <div>
+                    <h1>My Journals</h1>
+                    <p>Record your thoughts and feelings</p>
+                </div>
+                <div class="header-right">
+                    <a href="/profile" class="user-avatar">MG</a>
+                    <a href="/journals/new-folder" class="new-entry-btn">+ New Entry</a>
+                </div>
+            </div>
+            <div class="folders-container">
+                <% folders.forEach(folder => { %>
+                    <a href="/journals/folder/<%= folder.id %>" class="folder-card" style="background:<%= folder.color %>;">
+                        <div class="folder-image">300 × 200</div>
+                        <div class="folder-title"><%= folder.name %></div>
+                    </a>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

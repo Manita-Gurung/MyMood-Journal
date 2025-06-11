@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar - MyMood Journal</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/calendar.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <%- include('partials/sidebar', { activePage: 'calendar' }) %>
+        <div class="main-content">
+            <%- include('partials/header', { title: 'Calendar', userInitials: userInitials }) %>
+            <div class="content-wrapper">
+                <div class="calendar-container">
+                    <div class="calendar">
+                    <div class="calendar-header">
+                        <div class="calendar-nav">
+                            <button id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+                            <h2 id="currentMonth">March 2024</h2>
+                            <button id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="calendar-day-header">Sun</div>
+                        <div class="calendar-day-header">Mon</div>
+                        <div class="calendar-day-header">Tue</div>
+                        <div class="calendar-day-header">Wed</div>
+                        <div class="calendar-day-header">Thu</div>
+                        <div class="calendar-day-header">Fri</div>
+                        <div class="calendar-day-header">Sat</div>
+                        <!-- Calendar days will be inserted here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="mood-insights-panel">
+                <h2 class="mood-insights-title">Mood Insights</h2>
+                <div class="mood-stats">
+                    <div class="stat-item">
+                        Total Entries: <strong><%= totalEntries || 0 %></strong>
+                    </div>
+                    <div class="stat-item">
+                        Most Frequent Mood: <strong><%= mostFrequentMood || 'None' %></strong>
+                    </div>
+                </div>
+                <div class="mood-legend">
+                    <h3 class="mood-legend-title">Mood Legend</h3>
+                    <div class="mood-legend-item happy">
+                        <span class="mood-legend-emoji">😊</span>
+                        <span class="mood-legend-label">Happy</span>
+                    </div>
+                    <div class="mood-legend-item excited">
+                        <span class="mood-legend-emoji">🤗</span>
+                        <span class="mood-legend-label">Excited</span>
+                    </div>
+                    <div class="mood-legend-item loved">
+                        <span class="mood-legend-emoji">🥰</span>
+                        <span class="mood-legend-label">Loved</span>
+                    </div>
+                    <div class="mood-legend-item calm">
+                        <span class="mood-legend-emoji">😌</span>
+                        <span class="mood-legend-label">Calm</span>
+                    </div>
+                    <div class="mood-legend-item okay">
+                        <span class="mood-legend-emoji">😐</span>
+                        <span class="mood-legend-label">Okay</span>
+                    </div>
+                    <div class="mood-legend-item sad">
+                        <span class="mood-legend-emoji">😢</span>
+                        <span class="mood-legend-label">Sad</span>
+                    </div>
+                    <div class="mood-legend-item angry">
+                        <span class="mood-legend-emoji">😠</span>
+                        <span class="mood-legend-label">Angry</span>
+                    </div>
+                    <div class="mood-legend-item stressed">
+                        <span class="mood-legend-emoji">😫</span>
+                        <span class="mood-legend-label">Stressed</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="mood-selector" id="moodSelector">
+        <h3>Select mood for <span id="selectedDate"></span></h3>
+        <div class="mood-grid">
+            <div class="mood-option" data-mood="happy">
+                <div class="emoji">😊</div>
+                <div class="label">Happy</div>
+            </div>
+            <div class="mood-option" data-mood="excited">
+                <div class="emoji">🤗</div>
+                <div class="label">Excited</div>
+            </div>
+            <div class="mood-option" data-mood="loved">
+                <div class="emoji">🥰</div>
+                <div class="label">Loved</div>
+            </div>
+            <div class="mood-option" data-mood="calm">
+                <div class="emoji">😌</div>
+                <div class="label">Calm</div>
+            </div>
+            <div class="mood-option" data-mood="okay">
+                <div class="emoji">😐</div>
+                <div class="label">Okay</div>
+            </div>
+            <div class="mood-option" data-mood="sad">
+                <div class="emoji">😢</div>
+                <div class="label">Sad</div>
+            </div>
+            <div class="mood-option" data-mood="angry">
+                <div class="emoji">😠</div>
+                <div class="label">Angry</div>
+            </div>
+            <div class="mood-option" data-mood="stressed">
+                <div class="emoji">😫</div>
+                <div class="label">Stressed</div>
+            </div>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendar = document.querySelector('.calendar-grid');
+            const currentMonthElement = document.getElementById('currentMonth');
+            const moodSelector = document.getElementById('moodSelector');
+            const overlay = document.getElementById('overlay');
+            const selectedDateElement = document.getElementById('selectedDate');
+            let currentDate = new Date();
+            let selectedDay = null;
+            const moods = {};
+
+            function renderCalendar(date) {
+                const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+                const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+                const startingDay = firstDay.getDay();
+                const monthLength = lastDay.getDate();
+
+                currentMonthElement.textContent = date.toLocaleString('default', { 
+                    month: 'long', 
+                    year: 'numeric' 
+                });
+
+                // Clear existing calendar days except headers
+                const headers = document.querySelectorAll('.calendar-day-header');
+                calendar.innerHTML = '';
+                headers.forEach(header => calendar.appendChild(header));
+
+                // Add empty cells for days before the first day of the month
+                for (let i = 0; i < startingDay; i++) {
+                    const emptyDay = document.createElement('div');
+                    emptyDay.className = 'calendar-day';
+                    calendar.appendChild(emptyDay);
+                }
+
+                // Add days of the month
+                for (let day = 1; day <= monthLength; day++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day';
+                    const dateStr = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                    
+                    const dateSpan = document.createElement('span');
+                    dateSpan.className = 'date';
+                    dateSpan.textContent = day;
+                    
+                    const moodSpan = document.createElement('span');
+                    moodSpan.className = 'mood';
+                    if (moods[dateStr]) {
+                        moodSpan.textContent = moods[dateStr].emoji;
+                    }
+
+                    dayElement.appendChild(dateSpan);
+                    dayElement.appendChild(moodSpan);
+
+                    dayElement.addEventListener('click', () => {
+                        selectedDay = dateStr;
+                        selectedDateElement.textContent = new Date(dateStr).toLocaleDateString();
+                        moodSelector.classList.add('active');
+                        overlay.classList.add('active');
+                    });
+
+                    calendar.appendChild(dayElement);
+                }
+            }
+
+            // Initialize calendar
+            renderCalendar(currentDate);
+
+            // Previous month button
+            document.getElementById('prevMonth').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                renderCalendar(currentDate);
+            });
+
+            // Next month button
+            document.getElementById('nextMonth').addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                renderCalendar(currentDate);
+            });
+
+            // Handle mood selection
+            document.querySelectorAll('.mood-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    const mood = option.getAttribute('data-mood');
+                    const emoji = option.querySelector('.emoji').textContent;
+                    
+                    // Save mood for the selected date
+                    moods[selectedDay] = { mood, emoji };
+                    
+                    // Update calendar display
+                    renderCalendar(currentDate);
+                    
+                    // Close mood selector
+                    moodSelector.classList.remove('active');
+                    overlay.classList.remove('active');
+
+                    // Send mood data to server
+                    fetch('/calendar/mood', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            date: selectedDay,
+                            mood: mood,
+                            emoji: emoji
+                        })
+                    });
+                });
+            });
+
+            // Close mood selector when clicking overlay
+            overlay.addEventListener('click', () => {
+                moodSelector.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+
+            // Load existing moods from server
+            fetch('/calendar/moods')
+                .then(response => response.json())
+                .then(data => {
+                    Object.assign(moods, data);
+                    renderCalendar(currentDate);
+                });
+        });
+    </script>
+</body>
+</html>

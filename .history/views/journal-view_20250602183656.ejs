@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= journal.title %> - MyMood Journal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-color: #F0EAFB; /* Lighter purple for sidebar */
+            --main-color: #7B2CBF;   /* Vibrant purple for accents */
+            --content-bg: #FFFFFF;   /* Clean white for content background */
+            --text-color: #2C3E50;   /* Dark blue-gray for text */
+            --light-text-color: #5D6D7E; /* Lighter gray for secondary text */
+            --highlight-color: #C39BD3; /* Softer purple for highlights */
+            --border-color: #EAEAEA;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --button-hover-bg: #5A189A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%); /* Subtle gradient background */
+        }
+
+        .sidebar { /* This will be handled by partials/sidebar.ejs styles if included */
+            width: 250px;
+            background-color: var(--sidebar-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: fixed; /* Ensures sidebar stays fixed */
+            top: 0;
+            left: 0;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .main-content-area {
+            margin-left: 250px; /* Same as sidebar width */
+            flex-grow: 1;
+            padding: 40px; /* Increased padding */
+            background-color: var(--content-bg);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px; /* Increased margin */
+        }
+
+        .header h1 {
+            font-size: 2rem; /* Slightly larger */
+            color: var(--main-color);
+            font-weight: 600;
+        }
+        
+        .profile-btn {
+            background: var(--highlight-color);
+            border: none;
+            cursor: pointer;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .profile-btn:hover {
+            background-color: var(--main-color);
+        }
+
+        .journal-display-container {
+            background-color: #fff;
+            padding: 30px 35px; /* Increased padding */
+            border-radius: 15px; /* More rounded corners */
+            box-shadow: 0 8px 25px var(--shadow-color); /* Softer, more spread shadow */
+            border: 1px solid var(--border-color);
+            margin-top: 20px; /* Add some space from the back link */
+        }
+
+        .journal-header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .journal-title {
+            font-size: 2.2rem; /* Larger title */
+            color: var(--main-color);
+            margin-bottom: 8px; /* Reduced margin as date is below */
+            font-weight: 600;
+        }
+
+        .journal-date {
+            font-size: 0.95rem; /* Slightly larger */
+            color: var(--light-text-color);
+            margin-bottom: 25px; /* Increased margin */
+            font-style: italic;
+        }
+
+        .journal-content {
+            font-size: 1.05rem; /* Slightly larger for readability */
+            line-height: 1.7; /* Increased line height */
+            color: var(--text-color);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            padding: 15px;
+            background-color: #FDFEFE; /* Very light off-white for content area */
+            border-radius: 8px;
+            border: 1px solid #F0F0F0;
+        }
+        .journal-content p:not(:last-child) {
+            margin-bottom: 1em; /* Add space between paragraphs if using <p> tags */
+        }
+
+
+        .back-link {
+            display: inline-flex; /* For icon alignment */
+            align-items: center;
+            margin-bottom: 25px; /* Increased margin */
+            color: var(--main-color);
+            text-decoration: none;
+            font-weight: 600; /* Bolder */
+            font-size: 1rem;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background-color: var(--sidebar-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .back-link i {
+            margin-right: 8px; /* More space for icon */
+        }
+        .back-link:hover {
+            background-color: var(--main-color);
+            color: white;
+            text-decoration: none;
+        }
+
+        .edit-entry-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 15px;
+            background-color: var(--highlight-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+        .edit-entry-btn i {
+            margin-right: 6px;
+        }
+        .edit-entry-btn:hover {
+            background-color: var(--button-hover-bg);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto; /* 10% from the top and centered */
+            padding: 30px;
+            border: 1px solid #888;
+            width: 60%; /* Could be more or less, depending on screen size */
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: var(--main-color);
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+            text-decoration: none;
+        }
+
+        .modal-body form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .modal-body form input[type="text"],
+        .modal-body form input[type="date"],
+        .modal-body form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        .modal-body form textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .modal-footer button {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-footer .save-btn {
+            background-color: var(--main-color);
+            color: white;
+            margin-left: 10px;
+        }
+        .modal-footer .save-btn:hover {
+            background-color: var(--button-hover-bg);
+        }
+        .modal-footer .cancel-btn {
+            background-color: #ccc;
+            color: var(--text-color);
+        }
+        .modal-footer .cancel-btn:hover {
+            background-color: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/sidebar') %>
+
+    <div class="main-content-area">
+        <div class="header">
+            <h1>Journal Entry</h1>
+            <a href="/profile" class="profile-btn">
+                <% if (user && user.username && user.username.length > 0) { %>
+                    <%= user.username.charAt(0).toUpperCase() %>
+                    <% if (user.username.includes(' ')) { %>
+                        <%= user.username.split(' ')[1].charAt(0).toUpperCase() %>
+                    <% } else if (user.username.length > 1) { %>
+                        <%= user.username.charAt(1).toUpperCase() %>
+                    <% } %>
+                <% } else { %>
+                    <i class="fas fa-user"></i> <!-- Fallback icon -->
+                <% } %>
+            </a>
+        </div>
+
+        <a href="/journals" class="back-link"><i class="fas fa-arrow-left"></i> Back to Journals</a>
+
+        <div class="journal-display-container">
+            <div class="journal-header-controls">
+                <h2 class="journal-title" id="journalTitleDisplay"><%= journal.title %></h2>
+                <!-- Modified Edit Button -->
+                <button type="button" class="edit-entry-btn" id="openEditModalBtn">
+                    <i class="fas fa-edit"></i> Edit Entry
+                </button>
+            </div>
+            <p class="journal-date" id="journalDateDisplay">
+                <% const dateObj = new Date(journal.date); %>
+                <%= dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                 -
+                <%= dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) %>
+            </p>
+            <div class="journal-content" id="journalContentDisplay">
+                <%- journal.content.replace(/\n/g, '<br>') %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Entry Modal -->
+    <div id="editEntryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Journal Entry</h2>
+                <span class="close-btn" id="closeEditModalBtn">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editEntryForm">
+                    <input type="hidden" id="editEntryId" name="entryId">
+                    <div>
+                        <label for="editEntryTitle">Title:</label>
+                        <input type="text" id="editEntryTitle" name="title" required>
+                    </div>
+                    <div>
+                        <label for="editEntryDate">Date:</label>
+                        <input type="date" id="editEntryDate" name="date" required>
+                    </div>
+                    <div>
+                        <label for="editEntryContent">Content:</label>
+                        <textarea id="editEntryContent" name="content" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="cancel-btn" id="cancelEditBtn">Cancel</button>
+                <button type="submit" form="editEntryForm" class="save-btn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const editEntryModal = document.getElementById('editEntryModal');
+        const openEditModalBtn = document.getElementById('openEditModalBtn');
+        const closeEditModalBtn = document.getElementById('closeEditModalBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const editEntryForm = document.getElementById('editEntryForm');
+
+        // Store original journal data to populate the modal
+        // Ensure journal.content is properly escaped for JavaScript string literals
+        // and then unescaped for the textarea.
+        const currentJournalData = {
+            id: "<%= journal.id %>",
+            title: "<%= journal.title %>",
+            date: "<%= new Date(journal.date).toISOString().split('T')[0] %>",
+            content: `<%- JSON.stringify(journal.content).slice(1, -1) %>` // Safely escape content
+        };
+
+        openEditModalBtn.onclick = function() {
+            document.getElementById('editEntryId').value = currentJournalData.id;
+            document.getElementById('editEntryTitle').value = currentJournalData.title;
+            document.getElementById('editEntryDate').value = currentJournalData.date;
+            document.getElementById('editEntryContent').value = currentJournalData.content;
+            editEntryModal.style.display = "block";
+        }
+
+        function closeModal() {
+            editEntryModal.style.display = "none";
+        }
+
+        closeEditModalBtn.onclick = closeModal;
+        cancelEditBtn.onclick = closeModal;
+
+        window.onclick = function(event) {
+            if (event.target == editEntryModal) {
+                closeModal();
+            }
+        }
+
+        editEntryForm.onsubmit = async function(event) {
+            event.preventDefault();
+            const formData = new FormData(editEntryForm);
+            const entryId = formData.get('entryId');
+            const dataToUpdate = {
+                title: formData.get('title'),
+                date: formData.get('date'),
+                content: formData.get('content')
+            };
+
+            try {
+                const response = await fetch(`/journals/update/${entryId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                        // If you use CSRF protection, you would pass the token in the headers here.
+                        // For now, we are proceeding without it as it's not explicitly set up.
+                    },
+                    body: JSON.stringify(dataToUpdate)
+                });
+
+                const result = await response.json(); // Try to parse JSON regardless of response.ok
+
+                if (!response.ok) {
+                    throw new Error(result.message || `HTTP error! Status: ${response.status}`);
+                }
+
+                if (result.success && result.journal) {
+                    // Update the page content dynamically
+                    document.getElementById('journalTitleDisplay').textContent = result.journal.title;
+                    
+                    const updatedDate = new Date(result.journal.date);
+                    // Adjust for timezone offset to display correct local date in the input
+                    const timezoneOffset = updatedDate.getTimezoneOffset() * 60000; //offset in milliseconds
+                    const correctedDate = new Date(updatedDate.getTime() + timezoneOffset);
+
+
+                    document.getElementById('journalDateDisplay').innerHTML =
+                        `${correctedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}` +
+                        ` - ` +
+                        `${correctedDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}`;
+                    
+                    document.getElementById('journalContentDisplay').innerHTML = result.journal.content.replace(/\n/g, '<br>');
+                    
+                    // Update currentJournalData for subsequent edits
+                    currentJournalData.title = result.journal.title;
+                    currentJournalData.date = correctedDate.toISOString().split('T')[0];
+                    currentJournalData.content = result.journal.content;
+
+                    closeModal();
+                    alert('Journal entry updated successfully!');
+                } else {
+                    alert('Error updating journal: ' + (result.message || 'Unknown error from server.'));
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('Failed to update journal entry: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

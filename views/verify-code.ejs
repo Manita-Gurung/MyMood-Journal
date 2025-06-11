@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Code - MyMood Journal</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('/images/footer.jpg');
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .auth-box {
+            background: rgba(230, 230, 250, 0.95);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        h2 {
+            color: #333;
+            margin: 0 0 1rem 0;
+            font-size: 1.5rem;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .code-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 2rem 0;
+        }
+
+        .code-input {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+            background: white;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: #8B4FFF;
+            box-shadow: 0 0 0 2px rgba(139, 79, 255, 0.2);
+        }
+
+        .submit-button {
+            background: white;
+            color: #8B4FFF;
+            border: 2px solid #8B4FFF;
+            padding: 10px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .submit-button:hover {
+            background: #8B4FFF;
+            color: white;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: #8B4FFF;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .back-button:hover {
+            background: #8B4FFF;
+            color: white;
+        }
+
+        .back-button svg {
+            width: 16px;
+            height: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover svg {
+            stroke: white;
+        }
+
+        .resend-text {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .timer {
+            color: #8B4FFF;
+            font-weight: bold;
+        }
+
+        .alert {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .alert-danger {
+            background-color: #ffe6e6;
+            color: #cc0000;
+        }
+
+        .alert-success {
+            background-color: #e6ffe6;
+            color: #006600;
+        }
+    </style>
+</head>
+<body>
+    <a href="/users/forgot-password" class="back-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Back
+    </a>
+    
+    <div class="auth-box">
+        <h2>Enter Verification Code</h2>
+        <p>The verification code has been sent to<br>your email</p>
+
+        <% if(typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+            <div class="alert alert-danger">
+                <%= error_msg %>
+            </div>
+        <% } %>
+        
+        <% if(typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+            <div class="alert alert-success">
+                <%= success_msg %>
+            </div>
+        <% } %>
+
+        <form action="/users/verify-code" method="POST">
+            <input type="hidden" name="email" value="<%= email %>">
+            <div class="code-container">
+                <input type="text" class="code-input" maxlength="1" pattern="[0-9]" required>
+                <input type="text" class="code-input" maxlength="1" pattern="[0-9]" required>
+                <input type="text" class="code-input" maxlength="1" pattern="[0-9]" required>
+                <input type="text" class="code-input" maxlength="1" pattern="[0-9]" required>
+                <input type="text" class="code-input" maxlength="1" pattern="[0-9]" required>
+                <input type="text" class="code-input" maxlength="1" pattern="[0-9]" required>
+                <input type="hidden" name="code" id="codeInput">
+            </div>
+            <button type="submit" class="submit-button">Continue</button>
+        </form>
+
+        <p class="resend-text">
+            Not received yet? Resend after <span class="timer" id="timer">59</span> seconds
+        </p>
+    </div>
+
+    <script>
+        // Auto-focus and move between code inputs
+        const codeInputs = document.querySelectorAll('.code-input');
+        const form = document.querySelector('form');
+        const hiddenInput = document.getElementById('codeInput');
+
+        codeInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length === 1) {
+                    if (index < codeInputs.length - 1) {
+                        codeInputs[index + 1].focus();
+                    }
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    codeInputs[index - 1].focus();
+                }
+            });
+        });
+
+        // Combine code inputs before form submission
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const code = Array.from(codeInputs).map(input => input.value).join('');
+            hiddenInput.value = code;
+            form.submit();
+        });
+
+        // Timer functionality
+        let timeLeft = 59;
+        const timerElement = document.getElementById('timer');
+        
+        const countdown = setInterval(() => {
+            timeLeft--;
+            timerElement.textContent = timeLeft;
+            
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                const resendText = document.querySelector('.resend-text');
+                resendText.innerHTML = 'Not received yet? <a href="/users/resend-code" style="color: #8B4FFF; text-decoration: none;">Resend code</a>';
+            }
+        }, 1000);
+
+        // Focus first input on page load
+        window.onload = () => codeInputs[0].focus();
+    </script>
+</body>
+</html> 

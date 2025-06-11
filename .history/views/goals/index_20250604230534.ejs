@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Goals - MyMood Journal</title>
+    <link rel="stylesheet" href="/css/goals.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<style>
+        /* Added CSS for consistent styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+        }
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+       <!-- Sidebar -->
+       <div class="sidebar">
+        <div class="logo">
+            <img src="/images/logo.png" alt="MyMood Journal">
+            <span>MyMood Journal</span>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="/dashboard" class="nav-item">
+                <i class="fas fa-home"></i>
+                My Dashboard
+            </a>
+            <a href="/journals" class="nav-item">
+                <i class="fas fa-book"></i>
+                My Journals
+            </a>
+            <a href="/goals" class="nav-item active">
+                <i class="fas fa-bullseye"></i>
+                My Goals
+            </a>
+            <a href="/calendar" class="nav-item">
+                <i class="fas fa-calendar"></i>
+                Calendar
+            </a>
+            <a href="/settings" class="nav-item">
+                <i class="fas fa-cog"></i>
+                Settings
+            </a>
+        </nav>
+
+        <div class="logout-section">
+            <a href="/users/logout" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </div>
+    </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="goals-header">
+                <div>
+                    <h1>My Goals</h1>
+                </div>
+                <div class="header-right">
+                    <a href="/profile" class="user-avatar"><%= userInitials %></a>
+                    <button class="add-goal-btn" onclick="showAddGoalModal()">+ Add New Goal</button>
+                </div>
+            </div>
+
+            <div class="goals-container">
+                <div class="goal-tracker">
+                    <div class="tracker-header">
+                        <h2>Goal Tracker</h2>
+                    </div>
+
+                    <div class="goals-list">
+                        <% if (goals && goals.length > 0) { %>
+                            <% goals.forEach(goal => { %>
+                                <div class="goal-item <%= goal.completed ? 'completed' : '' %>" data-goal-id="<%= goal.id %>">
+                                    <button onclick="toggleGoal(<%= goal.id %>)" class="goal-checkbox <%= goal.completed ? 'checked' : '' %>">
+                                        <i class="fas <%= goal.completed ? 'fa-check' : 'fa-circle' %>"></i>
+                                    </button>
+                                    <div class="goal-details">
+                                        <h3><%= goal.title %></h3>
+                                        <p><%= goal.description %></p>
+                                        <span class="due-date">Due: <%= new Date(goal.dueDate).toLocaleDateString() %></span>
+                                    </div>
+                                    <form action="/goals/<%= goal.id %>?_method=DELETE" method="POST" style="display: inline;">
+                                        <button type="submit" class="delete-goal">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            <% }); %>
+                        <% } else { %>
+                            <div class="empty-state">
+                                <p>No goals yet. Start by adding your first goal!</p>
+                                <button class="add-goal-btn" onclick="showAddGoalModal()">+ Add New Goal</button>
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <div class="goals-summary">
+                        <div class="summary-box">
+                            <h3>My Goals</h3>
+                            <div class="stats">
+                                <p>Total Goals: <%= goals ? goals.length : 0 %></p>
+                                <p>Completed: <%= goals ? goals.filter(g => g.completed).length : 0 %></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Goal Modal -->
+    <div id="addGoalModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddGoalModal()">&times;</span>
+            <h2>Add New Goal</h2>
+            <form action="/goals" method="POST">
+                <div class="form-group">
+                    <label for="title">Goal Title</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="dueDate">Due Date</label>
+                    <input type="date" id="dueDate" name="dueDate" required>
+                </div>
+                <button type="submit" class="submit-btn">Create Goal</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showAddGoalModal() {
+            document.getElementById('addGoalModal').style.display = 'block';
+        }
+
+        function closeAddGoalModal() {
+            document.getElementById('addGoalModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('addGoalModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Toggle goal completion using AJAX
+        function toggleGoal(goalId) {
+            fetch(`/goals/${goalId}/toggle`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const goalItem = document.querySelector(`[data-goal-id="${goalId}"]`);
+                    const checkbox = goalItem.querySelector('.goal-checkbox');
+                    const icon = checkbox.querySelector('i');
+                    
+                    if (data.completed) {
+                        goalItem.classList.add('completed');
+                        checkbox.classList.add('checked');
+                        icon.classList.remove('fa-circle');
+                        icon.classList.add('fa-check');
+                    } else {
+                        goalItem.classList.remove('completed');
+                        checkbox.classList.remove('checked');
+                        icon.classList.remove('fa-check');
+                        icon.classList.add('fa-circle');
+                    }
+
+                    // Update the completion count
+                    const completedGoals = document.querySelectorAll('.goal-item.completed').length;
+                    const totalGoals = document.querySelectorAll('.goal-item').length;
+                    document.querySelector('.stats').innerHTML = `
+                        <p>Total Goals: ${totalGoals}</p>
+                        <p>Completed: ${completedGoals}</p>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to update goal status');
+            });
+        }
+    </script>
+</body>
+</html>
+
