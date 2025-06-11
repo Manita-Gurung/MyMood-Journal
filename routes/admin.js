@@ -2,7 +2,15 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const { checkNotAuthenticated, ensureAuthenticated, isAdmin } = require('../middleware/auth');
+<<<<<<< HEAD
 const { User, Journal } = require('../models');
+=======
+<<<<<<< HEAD
+const { User, Journal } = require('../models');
+=======
+const { User, Entry } = require('../models');
+>>>>>>> 4557a295b2d52c655573d57ab0d421088e3b2fdb
+>>>>>>> 72db02b3a03ab3c6a2022097b1190c68374736be
 const { Op, Sequelize } = require('sequelize');
 
 // Admin Login Page
@@ -58,12 +66,28 @@ router.get('/dashboard', ensureAuthenticated, isAdmin, async (req, res) => {
 
         const todayStart = new Date();
         todayStart.setHours(0, 0, 0, 0);
+<<<<<<< HEAD
         const entriesToday = await Journal.count({ where: { createdAt: { [Op.gte]: todayStart } } });
+=======
+<<<<<<< HEAD
+        const entriesToday = await Journal.count({ where: { createdAt: { [Op.gte]: todayStart } } });
+=======
+        const entriesToday = await Entry.count({ where: { createdAt: { [Op.gte]: todayStart } } });
+>>>>>>> 4557a295b2d52c655573d57ab0d421088e3b2fdb
+>>>>>>> 72db02b3a03ab3c6a2022097b1190c68374736be
         
         // Placeholder for growth/retention - requires more historical data logic
         const userGrowthPercentage = 12.5; // Example
         const activeUsersRetention = 78.2; // Example
+<<<<<<< HEAD
         const avgEntriesPerUser = totalUsers > 0 ? (await Journal.count() / totalUsers).toFixed(1) : 0;
+=======
+<<<<<<< HEAD
+        const avgEntriesPerUser = totalUsers > 0 ? (await Journal.count() / totalUsers).toFixed(1) : 0;
+=======
+        const avgEntriesPerUser = totalUsers > 0 ? (await Entry.count() / totalUsers).toFixed(1) : 0;
+>>>>>>> 4557a295b2d52c655573d57ab0d421088e3b2fdb
+>>>>>>> 72db02b3a03ab3c6a2022097b1190c68374736be
 
         // --- User Management Table --- 
         const page = parseInt(req.query.page) || 1;
@@ -99,11 +123,22 @@ router.get('/dashboard', ensureAuthenticated, isAdmin, async (req, res) => {
         const startIndex = offset;
         const endIndex = Math.min(offset + limit, count);
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 72db02b3a03ab3c6a2022097b1190c68374736be
         res.render('admin/admindashboard', {
             user: req.user, // Logged in admin user
             userInitials: req.user.first_name && req.user.last_name
                 ? `${req.user.first_name[0]}${req.user.last_name[0]}`.toUpperCase()
                 : req.user.email.substring(0, 2).toUpperCase(),
+<<<<<<< HEAD
+=======
+=======
+        res.render('admin/dashboard', {
+            user: req.user, // Logged in admin user
+>>>>>>> 4557a295b2d52c655573d57ab0d421088e3b2fdb
+>>>>>>> 72db02b3a03ab3c6a2022097b1190c68374736be
             stats: {
                 totalUsers,
                 activeUsers: activeUsersLast7Days,
