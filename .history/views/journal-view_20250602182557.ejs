@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= journal.title %> - MyMood Journal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-color: #F0EAFB; /* Lighter purple for sidebar */
+            --main-color: #7B2CBF;   /* Vibrant purple for accents */
+            --content-bg: #FFFFFF;   /* Clean white for content background */
+            --text-color: #2C3E50;   /* Dark blue-gray for text */
+            --light-text-color: #5D6D7E; /* Lighter gray for secondary text */
+            --highlight-color: #C39BD3; /* Softer purple for highlights */
+            --border-color: #EAEAEA;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --button-hover-bg: #5A189A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%); /* Subtle gradient background */
+        }
+
+        .sidebar { /* This will be handled by partials/sidebar.ejs styles if included */
+            width: 250px;
+            background-color: var(--sidebar-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: fixed; /* Ensures sidebar stays fixed */
+            top: 0;
+            left: 0;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .main-content-area {
+            margin-left: 250px; /* Same as sidebar width */
+            flex-grow: 1;
+            padding: 40px; /* Increased padding */
+            background-color: var(--content-bg);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px; /* Increased margin */
+        }
+
+        .header h1 {
+            font-size: 2rem; /* Slightly larger */
+            color: var(--main-color);
+            font-weight: 600;
+        }
+        
+        .profile-btn {
+            background: var(--highlight-color);
+            border: none;
+            cursor: pointer;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .profile-btn:hover {
+            background-color: var(--main-color);
+        }
+
+        .journal-display-container {
+            background-color: #fff;
+            padding: 30px 35px; /* Increased padding */
+            border-radius: 15px; /* More rounded corners */
+            box-shadow: 0 8px 25px var(--shadow-color); /* Softer, more spread shadow */
+            border: 1px solid var(--border-color);
+            margin-top: 20px; /* Add some space from the back link */
+        }
+
+        .journal-header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .journal-title {
+            font-size: 2.2rem; /* Larger title */
+            color: var(--main-color);
+            margin-bottom: 8px; /* Reduced margin as date is below */
+            font-weight: 600;
+        }
+
+        .journal-date {
+            font-size: 0.95rem; /* Slightly larger */
+            color: var(--light-text-color);
+            margin-bottom: 25px; /* Increased margin */
+            font-style: italic;
+        }
+
+        .journal-content {
+            font-size: 1.05rem; /* Slightly larger for readability */
+            line-height: 1.7; /* Increased line height */
+            color: var(--text-color);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            padding: 15px;
+            background-color: #FDFEFE; /* Very light off-white for content area */
+            border-radius: 8px;
+            border: 1px solid #F0F0F0;
+        }
+        .journal-content p:not(:last-child) {
+            margin-bottom: 1em; /* Add space between paragraphs if using <p> tags */
+        }
+
+
+        .back-link {
+            display: inline-flex; /* For icon alignment */
+            align-items: center;
+            margin-bottom: 25px; /* Increased margin */
+            color: var(--main-color);
+            text-decoration: none;
+            font-weight: 600; /* Bolder */
+            font-size: 1rem;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background-color: var(--sidebar-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .back-link i {
+            margin-right: 8px; /* More space for icon */
+        }
+        .back-link:hover {
+            background-color: var(--main-color);
+            color: white;
+            text-decoration: none;
+        }
+
+        .edit-entry-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 15px;
+            background-color: var(--highlight-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+        .edit-entry-btn i {
+            margin-right: 6px;
+        }
+        .edit-entry-btn:hover {
+            background-color: var(--button-hover-bg);
+        }
+
+    </style>
+</head>
+<body>
+    <%- include('partials/sidebar') %>
+
+    <div class="main-content-area">
+        <div class="header">
+            <h1>Journal Entry</h1>
+            <a href="/profile" class="profile-btn">
+                <% if (user && user.username && user.username.length > 0) { %>
+                    <%= user.username.charAt(0).toUpperCase() %>
+                    <% if (user.username.includes(' ')) { %>
+                        <%= user.username.split(' ')[1].charAt(0).toUpperCase() %>
+                    <% } else if (user.username.length > 1) { %>
+                        <%= user.username.charAt(1).toUpperCase() %>
+                    <% } %>
+                <% } else { %>
+                    <i class="fas fa-user"></i> <!-- Fallback icon -->
+                <% } %>
+            </a>
+        </div>
+
+        <a href="/journals" class="back-link"><i class="fas fa-arrow-left"></i> Back to Journals</a>
+
+        <div class="journal-display-container">
+            <div class="journal-header-controls">
+                <h2 class="journal-title"><%= journal.title %></h2>
+                <a href="/journals/<%= journal.id %>/edit" class="edit-entry-btn">
+                    <i class="fas fa-edit"></i> Edit Entry
+                </a>
+            </div>
+            <p class="journal-date">
+                <% const date = new Date(journal.date); %>
+                <%= date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                 -
+                <%= date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) %>
+            </p>
+            <div class="journal-content">
+                <%- journal.content.replace(/\n/g, '<br>') %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

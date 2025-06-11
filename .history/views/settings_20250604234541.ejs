@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Settings - MyMood Journal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+  <style>
+    :root {
+      --sidebar-color: #C8BFE7;
+      --main-color: #8B4FFF;
+      --content-bg: #FBE4E4;
+      --danger-color: #dc3545;
+      --header-purple: #785A96;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      min-height: 100vh;
+      background-color: #fff;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: 250px;
+      background-color: var(--sidebar-color);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .logo img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+      border-radius: 50%;
+    }
+
+    .logo span {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .nav-menu {
+      flex-grow: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      color: #333;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-item i {
+      margin-right: 10px;
+      width: 20px;
+    }
+
+    .nav-item:hover {
+      background-color: rgba(255, 255, 255, 0.5);
+      transform: translateX(5px);
+    }
+
+    .nav-item.active {
+      background-color: #fff;
+      font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .logout-section {
+      margin-top: auto;
+      padding-top: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #785A96;
+      background-color: #fff;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      border: 2px solid #785A96;
+      width: fit-content;
+      font-size: 0.9em;
+    }
+
+    .logout-btn:hover {
+      background-color: #785A96;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .logout-btn i {
+      margin-right: 8px;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 30px;
+      background-color: white;
+    }
+
+    /* UPDATED HEADER STYLES ONLY */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      background-color: var(--header-purple);
+      padding: 20px 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .header h1 {
+      font-size: 1.8rem;
+      color: white;
+      font-weight: 600;
+    }
+
+    .header p {
+      color: white;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .profile-btn {
+      background: white;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: var(--header-purple);
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Rest of the original styles remain unchanged */
+    .settings-section {
+      background: #785A96;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .settings-section h2 {
+      color: #333;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .danger-zone {
+      background-color: #fff5f5;
+      border: 1px solid #ffebeb;
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .danger-zone h3 {
+      color: var(--danger-color);
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+    }
+
+    .danger-zone p {
+      color: #666;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .delete-account-btn {
+      background-color: var(--danger-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background-color 0.3s;
+    }
+
+    .delete-account-btn:hover {
+      background-color: #bd2130;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .modal-title {
+      color: var(--danger-color);
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+    }
+
+    .modal-text {
+      color: #666;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .modal-btn {
+      padding: 10px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+
+    .modal-btn.cancel {
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      color: #333;
+    }
+
+    .modal-btn.delete {
+      background: var(--danger-color);
+      border: none;
+      color: white;
+    }
+
+    .modal-btn.cancel:hover {
+      background: #e2e6ea;
+    }
+
+    .modal-btn.delete:hover {
+      background: #bd2130;
+    }
+
+    .alert {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .alert-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .alert-danger {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">
+      <img src="/images/logo.png" alt="MyMood Journal" />
+      <span>MyMood Journal</span>
+    </div>
+
+    <nav class="nav-menu">
+      <a href="/dashboard" class="nav-item"><i class="fas fa-home"></i>My Dashboard</a>
+      <a href="/journals" class="nav-item"><i class="fas fa-book"></i>My Journals</a>
+      <a href="/goals" class="nav-item"><i class="fas fa-bullseye"></i>My Goals</a>
+      <a href="/calendar" class="nav-item"><i class="fas fa-calendar"></i>Calendar</a>
+      <a href="/settings" class="nav-item active"><i class="fas fa-cog"></i>Settings</a>
+    </nav>
+
+    <div class="logout-section">
+      <a href="/users/logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i>Logout</a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <!-- Updated Header -->
+    <div class="header">
+      <div>
+        <h1>Settings</h1>
+        <p>Manage your account preferences</p>
+      </div>
+      <button class="profile-btn">M6</button>
+    </div>
+
+    <% if(typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+      <div class="alert alert-success"><%= success_msg %></div>
+    <% } %>
+    <% if(typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+      <div class="alert alert-danger"><%= error_msg %></div>
+    <% } %>
+
+    <div class="settings-section">
+      <h2>Account Settings</h2>
+      <div class="danger-zone">
+        <h3>Delete Account</h3>
+        <p>Once you delete your account, there is no going back. Please be certain.</p>
+        <button class="delete-account-btn" onclick="showDeleteConfirmation()">Delete My Account</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="deleteModal">
+    <div class="modal-content">
+      <h3 class="modal-title">Delete Account</h3>
+      <p class="modal-text">Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently deleted.</p>
+      <div class="modal-buttons">
+        <button class="modal-btn cancel" onclick="hideDeleteConfirmation()">Cancel</button>
+        <form action="/settings/delete-account?_method=DELETE" method="POST" style="display: inline;">
+          <button type="submit" class="modal-btn delete">Delete Account</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showDeleteConfirmation() {
+      document.getElementById('deleteModal').classList.add('active');
+    }
+
+    function hideDeleteConfirmation() {
+      document.getElementById('deleteModal').classList.remove('active');
+    }
+
+    document.getElementById('deleteModal').addEventListener('click', function (e) {
+      if (e.target === this) {
+        hideDeleteConfirmation();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MyMood Journal - Calendar</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f9;
+      color: #333;
+    }
+
+    header {
+      background-color: #6c5ce7;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .calendar-container {
+      max-width: 900px;
+      margin: 2rem auto;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    .calendar-header {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+    }
+
+    .calendar-day-header {
+      text-align: center;
+      font-weight: bold;
+      color: #555;
+    }
+
+    .calendar-day {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      background-color: #fafafa;
+      transition: background 0.2s;
+    }
+
+    .calendar-day:hover {
+      background-color: #e0e7ff;
+    }
+
+    .calendar-day .date {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .calendar-day .mood {
+      font-size: 1.5rem;
+    }
+
+    .mood-selector {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      z-index: 1000;
+      display: none;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+
+    .mood-selector.active {
+      display: block;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .mood-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-top: 1rem;
+    }
+
+    .mood-option {
+      text-align: center;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+
+    .mood-option:hover {
+      background: #f1f1f1;
+    }
+
+    .mood-option .emoji {
+      font-size: 1.8rem;
+    }
+
+    .mood-option .label {
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      z-index: 999;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    .mood-stats {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+    }
+
+    .stat-item h3 {
+      margin-bottom: 0.2rem;
+    }
+
+    @media (max-width: 600px) {
+      .mood-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .calendar-grid {
+        grid-template-columns: repeat(7, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MyMood Journal</h1>
+    <p>Track your mood each day</p>
+  </header>
+
+  <div class="calendar-container">
+    <div class="calendar-header">
+      <h2>June 2025</h2>
+    </div>
+    <div class="calendar-grid"></div>
+
+    <div class="mood-stats">
+      <div class="stat-item">
+        <h3>Total Entries</h3>
+        <strong>0</strong>
+      </div>
+      <div class="stat-item">
+        <h3>Most Frequent Mood</h3>
+        <strong>None</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="mood-selector">
+    <h3>Select Your Mood</h3>
+    <div class="mood-grid"></div>
+  </div>
+
+  <div class="overlay"></div>
+
+  <script>
+    const calendarGrid = document.querySelector(".calendar-grid");
+    const moodSelector = document.querySelector(".mood-selector");
+    const overlay = document.querySelector(".overlay");
+
+    const moods = [
+      { label: "Happy", emoji: "😊" },
+      { label: "Excited", emoji: "🤗" },
+      { label: "Loved", emoji: "🥰" },
+      { label: "Calm", emoji: "😌" },
+      { label: "Okay", emoji: "😐" },
+      { label: "Sad", emoji: "😢" },
+      { label: "Angry", emoji: "😠" },
+      { label: "Stressed", emoji: "😫" },
+    ];
+
+    const today = new Date();
+    let selectedDay = null;
+
+    function renderCalendar(year, month) {
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      calendarGrid.innerHTML = `
+        ${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+          .map(day => `<div class="calendar-day-header">${day}</div>`)
+          .join("")}
+      `;
+
+      for (let i = 0; i < firstDay; i++) {
+        calendarGrid.innerHTML += `<div></div>`;
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const div = document.createElement("div");
+        div.classList.add("calendar-day");
+        div.innerHTML = `<div class="date">${day}</div><div class="mood"></div>`;
+        div.addEventListener("click", () => openMoodSelector(div));
+        calendarGrid.appendChild(div);
+      }
+    }
+
+    function openMoodSelector(dayEl) {
+      selectedDay = dayEl;
+      moodSelector.classList.add("active");
+      overlay.classList.add("active");
+    }
+
+    function closeMoodSelector() {
+      moodSelector.classList.remove("active");
+      overlay.classList.remove("active");
+    }
+
+    function selectMood(mood) {
+      if (selectedDay) {
+        selectedDay.querySelector(".mood").textContent = mood.emoji;
+        selectedDay.dataset.mood = mood.label;
+      }
+      closeMoodSelector();
+      updateMoodStats();
+    }
+
+    function updateMoodStats() {
+      const allDays = document.querySelectorAll(".calendar-day[data-mood]");
+      const moodCounts = {};
+
+      allDays.forEach(day => {
+        const mood = day.dataset.mood;
+        moodCounts[mood] = (moodCounts[mood] || 0) + 1;
+      });
+
+      const totalEntries = allDays.length;
+      let mostFrequentMood = "None";
+
+      if (totalEntries > 0) {
+        mostFrequentMood = Object.entries(moodCounts).reduce((a, b) => (a[1] > b[1] ? a : b))[0];
+      }
+
+      document.querySelector(".stat-item strong").textContent = totalEntries;
+      document.querySelectorAll(".stat-item strong")[1].textContent = mostFrequentMood;
+    }
+
+    // Render mood options
+    const moodGrid = document.querySelector(".mood-grid");
+    moods.forEach(mood => {
+      const div = document.createElement("div");
+      div.classList.add("mood-option");
+      div.innerHTML = `<div class="emoji">${mood.emoji}</div><div class="label">${mood.label}</div>`;
+      div.addEventListener("click", () => selectMood(mood));
+      moodGrid.appendChild(div);
+    });
+
+    overlay.addEventListener("click", closeMoodSelector);
+
+    renderCalendar(today.getFullYear(), today.getMonth());
+  </script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - MyMood Journal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url('/images/footer.jpg'); /* Added background image */
+            background-size: cover; /* Ensure it covers the whole page */
+            background-position: center; /* Center the image */
+            background-repeat: no-repeat; /* Prevent tiling */
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+        }
+
+        .profile-card {
+            background-color: #FFFFFF; /* White card background */
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 400px; /* Increased from 360px */
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .profile-header {
+            background-color: #C8BFE7; /* Light purple header */
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #FFFFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 15px auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-avatar i {
+            font-size: 48px;
+            color: #8B4FFF; /* Main accent purple for icon */
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2C3E50; /* Dark text color */
+            margin: 0;
+        }
+
+        .profile-subtitle {
+            font-size: 14px;
+            color: #5D6D7E; /* Medium gray text */
+            margin-top: 4px;
+        }
+
+        .profile-info {
+            padding: 30px;
+            text-align: left;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-icon {
+            font-size: 18px;
+            color: #8B4FFF; /* Main accent purple */
+            margin-right: 15px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .info-content .label {
+            font-size: 12px;
+            color: #C8BFE7; /* Lighter purple for labels */
+            text-transform: uppercase;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .info-content .value {
+            font-size: 16px;
+            color: #2C3E50; /* Dark text */
+            font-weight: 500;
+        }
+
+        .sign-out-button {
+            display: block;
+            width: 200px; /* Changed from calc(100% - 60px) */
+            margin: 30px auto; /* Added auto for horizontal centering */
+            padding: 15px;
+            background-color: #C8BFE7; /* Light purple button */
+            color: #2C3E50; /* Dark text on button */
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .sign-out-button:hover {
+            background-color: #B0A5D8; /* Slightly darker purple on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <h1 class="profile-name"><%= user.username || (user.first_name + ' ' + user.last_name) %></h1>
+            <p class="profile-subtitle">Profile Information</p>
+        </div>
+        <div class="profile-info">
+            <div class="info-item">
+                <span class="info-icon"><i class="fas fa-file-alt"></i></span>
+                <div class="info-content">
+                    <p class="label">Full Name</p>
+                    <p class="value"><%= user.username || (user.first_name + ' ' + user.last_name) %></p>
+                </div>
+            </div>
+            <div class="info-item">
+                <span class="info-icon"><i class="fas fa-envelope"></i></span>
+                <div class="info-content">
+                    <p class="label">Email Address</p>
+                    <p class="value"><%= user.email %></p>
+                </div>
+            </div>
+            <div class="info-item">
+                <span class="info-icon"><i class="fas fa-calendar-alt"></i></span>
+                <div class="info-content">
+                    <p class="label">Member Since</p>
+                    <p class="value"><%= new Date(user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+                </div>
+            </div>
+        </div>
+        <a href="/users/logout" class="sign-out-button">Sign Out</a>
+    </div>
+</body>
+</html> 

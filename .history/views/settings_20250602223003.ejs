@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - MyMood Journal</title>
+    <link rel="stylesheet" href="/css/settings.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img src="/images/logo.png" alt="MyMood Journal">
+                <span>MyMood Journal</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="/dashboard" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    My Dashboard
+                </a>
+                <a href="/journals" class="nav-item">
+                    <i class="fas fa-book"></i>
+                    My Journals
+                </a>
+                <a href="/goals" class="nav-item">
+                    <i class="fas fa-bullseye"></i>
+                    My Goals
+                </a>
+                <a href="/calendar" class="nav-item">
+                    <i class="fas fa-calendar"></i>
+                    Calendar
+                </a>
+                <a href="/settings" class="nav-item active">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </nav>
+
+            <div class="logout-section">
+                <a href="/users/logout" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="settings-header">
+                <h1>Settings</h1>
+                <a href="/profile" class="user-avatar"><%= userInitials %></a>
+            </div>
+
+            <div class="settings-container">
+                <!-- Account Settings Section -->
+                <section class="settings-section">
+                    <h2>Account Settings</h2>
+                    
+                    <!-- Delete Account Section -->
+                    <div class="delete-account-section">
+                        <h3>Delete Account :(</h3>
+                        <p>If you no longer wish to use this account, you can permanently delete your account.</p>
+                        <div class="warning-box">
+                            <p><strong>Warning:</strong> This action cannot be undone. All your data will be permanently deleted.</p>
+                        </div>
+                        <form action="/users/delete" method="POST" onsubmit="return confirmDelete()">
+                            <button type="submit" class="delete-btn">
+                                <i class="fas fa-trash"></i>
+                                Delete My Account
+                            </button>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirmDelete() {
+            return confirm('Are you sure you want to delete your account? This action cannot be undone.');
+        }
+    </script>
+</body>
+</html> 

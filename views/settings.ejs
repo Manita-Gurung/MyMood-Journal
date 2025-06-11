@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Settings - MyMood Journal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/settings.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <%- include('partials/sidebar', { activePage: 'settings' }) %>
+    <div class="main-content">
+    <!-- Updated Header -->
+    <%- include('partials/header', { title: 'Settings', userInitials: userInitials }) %>
+
+    <% if(typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+      <div class="alert alert-success"><%= success_msg %></div>
+    <% } %>
+    <% if(typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+      <div class="alert alert-danger"><%= error_msg %></div>
+    <% } %>
+
+    <div class="settings-section">
+      <div class="danger-zone">
+        <h3>Delete Account ;(</h3>
+        <p>If you no longer wish to use this account, you can permanently delete your account.</p>
+        <button class="delete-account-btn" onclick="showDeleteConfirmation()">
+          <i class="fas fa-trash-alt"></i>
+          Delete My Account
+        </button>
+      </div>
+    </div>
+    <div class="modal" id="deleteModal">
+    <div class="modal-content">
+      <h3 class="modal-title">Delete Account</h3>
+      <p class="modal-text">Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently deleted.</p>
+      <div class="modal-buttons">
+        <button class="modal-btn cancel" onclick="hideDeleteConfirmation()">Cancel</button>
+        <form action="/settings/delete-account?_method=DELETE" method="POST" style="display: inline;">
+          <button type="submit" class="modal-btn delete">Delete Account</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showDeleteConfirmation() {
+      document.getElementById('deleteModal').classList.add('active');
+    }
+
+    function hideDeleteConfirmation() {
+      document.getElementById('deleteModal').classList.remove('active');
+    }
+
+    document.getElementById('deleteModal').addEventListener('click', function (e) {
+      if (e.target === this) {
+        hideDeleteConfirmation();
+      }
+    });
+  </script>
+</body>
+</html>
