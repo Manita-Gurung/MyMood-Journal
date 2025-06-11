@@ -53,11 +53,17 @@ Object.keys(db).forEach(modelName => {
 
 // Define associations
 db.User.hasMany(db.Goal, { foreignKey: 'userId', onDelete: 'CASCADE' });
+<<<<<<< HEAD
 db.User.hasMany(db.Journal, { foreignKey: 'userId', onDelete: 'CASCADE' });
 
 // Goal associations
 db.Goal.belongsTo(db.User, { foreignKey: 'userId' });
 db.Journal.belongsTo(db.User, { foreignKey: 'userId' });
+=======
+
+// Goal associations
+db.Goal.belongsTo(db.User, { foreignKey: 'userId' });
+>>>>>>> 4557a295b2d52c655573d57ab0d421088e3b2fdb
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

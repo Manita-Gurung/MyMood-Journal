@@ -1,9 +1,17 @@
 /* Reset and Base Styles */
+<<<<<<< HEAD
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+=======
+* * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+>>>>>>> 4557a295b2d52c655573d57ab0d421088e3b2fdb
 
         body {
             font-family: Arial, sans-serif;

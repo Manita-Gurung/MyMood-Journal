@@ -160,6 +160,7 @@
 
 .submit-btn:hover {
     background-color: #7040CC;
+<<<<<<< HEAD
 }
 /* Journal View */
 .journal-container {
@@ -254,4 +255,6 @@
 
 .back-link:hover {
     color: #8B4FFF;
+=======
+>>>>>>> 4557a295b2d52c655573d57ab0d421088e3b2fdb
 }
